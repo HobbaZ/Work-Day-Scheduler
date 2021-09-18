@@ -57,6 +57,10 @@ textarea {
   color: white;
 }
 
+.fas { /*fontAwesome icon*/
+  font-size: 40px;;
+}
+
 .saveBtn {
   border-left: 1px solid black;
   border-top-right-radius: 15px;
