@@ -2,48 +2,75 @@
 var currentDay = moment().format("dddd, Do MMMM, YYYY");
 $("#currentDay").text("Today is " + currentDay);
 
-currentHour = moment().format("H"); //in 24 hour format
-//console.log("The current hour is " + currentHour);
+//I can just do this for hour instead
+//currentHour = moment().hour();
+//console.log(currentHour);
 
-var businessHours = [9,10,11,12,13,14,15,16,17, 18, 19, 20]; //testing purposes, reduce back to 17 for final production
-var index = 0;
+//use moment.js values for hours and compare them 
+var currentHour = moment().hour();
+var startHour = moment().hour(8);
+var endHour = moment().hour(24);
 
-//use setTimeinterval?
+$(".time-block").each(function () { //not working atm, showing all green
+    if (startHour < currentHour) {
+        $(".time-block").addClass("past");
+        $(".time-block").removeClass("future");
+        $(".time-block").removeClass("present");
 
-//for each hour in businessHours array, check with currentHour to see what action to take, this breaks timeText each function
-businessHours.forEach(function() { //working, not sure if right approach though
-    if (businessHours[index] == currentHour) {
-        console.log("currentHour and businessHours index are the same, should be red");
-        //$(".time-block").toggleClass("time-block", ".present");
-
-        //This should work but might try toggle 
-        //Should be time-block instead of form-control Add present class to time-block might work
+    }   else if (endHour > currentHour) {
+        $(".time-block").addClass("future");
+        $(".time-block").removeClass("past");
+        $(".time-block").removeClass("present");
+    }   else {
         $(".time-block").addClass("present");
+        $(".time-block").removeClass("future");
+        $(".time-block").removeClass("past");
+}
+})
 
-    } else if (businessHours[index] > currentHour) {
-        console.log (businessHours[index] + " should be green in the future")
+//insert hours into timeText element
+var workHours= [9,10,11,12,13,14,15,16,17]; //24 hour format
+var i = 0;
 
-    } else {
-        console.log (businessHours[index] + " should be grey in the past");
+// add 1 workhour index to each instance of timeText, check if index is over or under 12
+$(".timeText").each(function() {
+    //check if current work hour is over twelve to change to pm
+    if (workHours[i] >= 12) {
+        $(this).text((workHours[i]-12) + " pm");
+        console.log((workHours[i]-12) + " pm");
+        //fix 0 pm issue
+        if (workHours[i] === 12) {
+            $(this).text((workHours[i]) + " Midday");
+        console.log((workHours[i]) + " pm");
+        }
+    } else { //if under 12 it will be am
+        $(this).text(workHours[i] + " am");
+        console.log(workHours[i] + " am");
 
     }
-    index++
+    workHours[i]++;
+})
+
+/*for (let index = startHour; index <= endHour; index++) { //can't do this with time module, breaks page
+    workHours.push[index];
+}*/
+
+//Save button saves text to local storage
+
+//only saves first textarea content atm, doesn't display text when refreshed yet
+
+$(".saveBtn").on("click", function(event) {
+    event.preventDefault();
+    //$(".description").addClass("active")
+    var text = $(".description").val();
+    //var time = $(".time-block");
+
+    localStorage.setItem("content", JSON.stringify(text));
+
+    display();
 });
 
-//might add image change on button click
-
-//for each instance of timeText in HTML, add 1 to businessHours index (working)
-/*$(".timeText").each(function() {
-
-    //check if current business hour is over twelve to change to pm
-    if (businessHours[index] > 12) {
-        $(this).text((businessHours[index]-12) + " pm");
-        //console.log(businessHours[index]-12);
-    } else {
-        $(this).text(businessHours[index] + " am");
-    }
-    businessHours[index]++;
-})*/
-
-
-
+function display() {
+    var savedContent = localStorage.getItem("content");
+    $(".description active").text(savedContent);
+}
