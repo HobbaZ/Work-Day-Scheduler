@@ -27,20 +27,17 @@ $(".timeText").each(function() {
     //check if current work hour is over twelve to change to pm
     if (workHours[i] >= 12) {
         $(this).text((workHours[i]-12) + " pm");
-        console.log((workHours[i]-12) + " pm");
         //fix 0 pm issue
         if (workHours[i] === 12 && workHours[i] < workHours[8]) {
-            $(this).html((workHours[i]) + "<br> Noon"); //brakeline added to format properly
-        console.log((workHours[i]) + " pm");
+            $(this).html((workHours[i]) + "<br> Noon"); //break line added to format properly
         }
     } else { //if under 12 it will be am
         $(this).text(workHours[i] + " am");
-        console.log(workHours[i] + " am");
     }
     workHours[i]++;
 })
 
-//Save button saves text to local storage, uses time-block id as 
+//Save button saves text to local storage, uses time-block id as key
 $(".saveBtn").on("click", function(event) {
     event.preventDefault();
 
@@ -50,6 +47,7 @@ $(".saveBtn").on("click", function(event) {
     localStorage.setItem(timeId, content);
 });
 
+//attempt at condensing getitem list to a few lines of code
 /*$("id").each(function() {
         var time = $(this).parent().attr("id");
         var content = $(this).siblings(".description");
