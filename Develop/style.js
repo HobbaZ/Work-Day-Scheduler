@@ -2,35 +2,25 @@
 var currentDay = moment().format("dddd, Do MMMM, YYYY");
 $("#currentDay").text("Today is " + currentDay);
 
-//I can just do this for hour instead
-//currentHour = moment().hour();
-//console.log(currentHour);
-
-//use moment.js values for hours and compare them 
-var currentHour = moment().hour();
-var startHour = moment().hour(8);
-var endHour = moment().hour(24);
-
-$(".time-block").each(function () { //not working atm, showing all green
-    if (startHour < currentHour) {
-        $(".time-block").addClass("past");
-        $(".time-block").removeClass("future");
-        $(".time-block").removeClass("present");
-
-    }   else if (endHour > currentHour) {
-        $(".time-block").addClass("future");
-        $(".time-block").removeClass("past");
-        $(".time-block").removeClass("present");
-    }   else {
-        $(".time-block").addClass("present");
-        $(".time-block").removeClass("future");
-        $(".time-block").removeClass("past");
-}
-})
-
 //insert hours into timeText element
 var workHours= [9,10,11,12,13,14,15,16,17]; //24 hour format
 var i = 0;
+
+//Get current hour with moment.js 
+var currentHour = moment().hour();
+
+$(".time-block").each(function () { //working now
+
+    var timeBlockTime = $(this).attr("id");
+    if (timeBlockTime < currentHour) {
+        $(this).addClass("past");
+
+    }   else if (timeBlockTime > currentHour) {
+        $(this).addClass("future");
+    }   else {//if current hour
+        $(this).addClass("present");
+}
+})
 
 // add 1 workhour index to each instance of timeText, check if index is over or under 12
 $(".timeText").each(function() {
@@ -39,38 +29,41 @@ $(".timeText").each(function() {
         $(this).text((workHours[i]-12) + " pm");
         console.log((workHours[i]-12) + " pm");
         //fix 0 pm issue
-        if (workHours[i] === 12) {
-            $(this).text((workHours[i]) + " Midday");
+        if (workHours[i] === 12 && workHours[i] < workHours[8]) {
+            $(this).text((workHours[i]) + " Noon");
         console.log((workHours[i]) + " pm");
         }
     } else { //if under 12 it will be am
         $(this).text(workHours[i] + " am");
         console.log(workHours[i] + " am");
-
     }
     workHours[i]++;
 })
 
-/*for (let index = startHour; index <= endHour; index++) { //can't do this with time module, breaks page
-    workHours.push[index];
-}*/
-
-//Save button saves text to local storage
-
-//only saves first textarea content atm, doesn't display text when refreshed yet
-
+//Save button saves text to local storage, uses time-block id as 
 $(".saveBtn").on("click", function(event) {
     event.preventDefault();
-    //$(".description").addClass("active")
-    var text = $(".description").val();
-    //var time = $(".time-block");
 
-    localStorage.setItem("content", JSON.stringify(text));
+    var timeId = $(this).parent().attr("id");
+    var content = $(this).siblings(".description").val();
 
-    display();
+    localStorage.setItem(timeId, content);
 });
 
-function display() {
-    var savedContent = localStorage.getItem("content");
-    $(".description active").text(savedContent);
-}
+
+/*$("id").each(function() {
+        var time = $(this).parent().attr("id");
+        var content = $(this).siblings(".description");
+        content.val(localStorage.getItem(time));
+})*/
+
+//Retrieve saved content and display in each textarea of each id
+$("#9 .description").val(localStorage.getItem("9"));
+$("#10 .description").val(localStorage.getItem("10"));
+$("#11 .description").val(localStorage.getItem("11"));
+$("#12 .description").val(localStorage.getItem("12"));
+$("#13 .description").val(localStorage.getItem("13"));
+$("#14 .description").val(localStorage.getItem("14"));
+$("#15 .description").val(localStorage.getItem("15"));
+$("#16 .description").val(localStorage.getItem("16"));
+$("#17 .description").val(localStorage.getItem("17"));
